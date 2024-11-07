@@ -1,13 +1,9 @@
-// profile_screen.dart
-
 import 'package:flutter/material.dart';
 import '../auth_service.dart';
 import 'login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class ProfileScreen extends StatelessWidget {
-  final AuthService _authService = AuthService(); // Removed const keyword
-
   const ProfileScreen({super.key});
 
   @override
@@ -17,11 +13,12 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
+        backgroundColor: Colors.blueAccent,
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
-              await _authService.signOut();
+              await AuthService().signOut();
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -34,13 +31,34 @@ class ProfileScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Logged in as: ${user?.email ?? 'Unknown'}"),
-            const SizedBox(height: 20),
+            Icon(Icons.person, size: 100, color: Colors.blueAccent),
+            SizedBox(height: 20),
+            Text(
+              "Logged in as:",
+              style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+            ),
+            SizedBox(height: 8),
+            Text(
+              user?.email ?? 'Unknown',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blueAccent),
+            ),
+            SizedBox(height: 30),
             ElevatedButton(
               onPressed: () async {
-                // Add functionality to change the password if needed
+                await AuthService().signOut();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                );
               },
-              child: const Text('Change Password'),
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 60),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                backgroundColor: Colors.blueAccent,
+              ),
+              child: Text('Log Out'),
             ),
           ],
         ),
@@ -48,3 +66,4 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 }
+
